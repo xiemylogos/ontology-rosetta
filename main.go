@@ -39,33 +39,33 @@ import (
 	service "github.com/ontio/ontology-rosetta/restful/services"
 	"github.com/ontio/ontology-rosetta/store"
 	rutil "github.com/ontio/ontology-rosetta/utils"
-	"github.com/ontio/ontology/account"
-	"github.com/ontio/ontology/cmd"
-	cmdcom "github.com/ontio/ontology/cmd/common"
-	"github.com/ontio/ontology/cmd/utils"
-	"github.com/ontio/ontology/common"
-	"github.com/ontio/ontology/common/config"
-	"github.com/ontio/ontology/common/log"
-	"github.com/ontio/ontology/consensus"
-	"github.com/ontio/ontology/core/genesis"
-	"github.com/ontio/ontology/core/ledger"
-	"github.com/ontio/ontology/events"
-	bactor "github.com/ontio/ontology/http/base/actor"
-	hserver "github.com/ontio/ontology/http/base/actor"
-	"github.com/ontio/ontology/http/jsonrpc"
-	"github.com/ontio/ontology/http/localrpc"
-	"github.com/ontio/ontology/http/nodeinfo"
-	"github.com/ontio/ontology/http/restful"
-	"github.com/ontio/ontology/http/websocket"
-	"github.com/ontio/ontology/p2pserver"
-	netreqactor "github.com/ontio/ontology/p2pserver/actor/req"
-	p2p "github.com/ontio/ontology/p2pserver/net/protocol"
-	"github.com/ontio/ontology/txnpool"
-	tc "github.com/ontio/ontology/txnpool/common"
-	"github.com/ontio/ontology/txnpool/proc"
-	"github.com/ontio/ontology/validator/stateful"
-	"github.com/ontio/ontology/validator/stateless"
 	"github.com/urfave/cli"
+	"github.com/xiemylogos/ontology/v2/account"
+	"github.com/xiemylogos/ontology/v2/cmd"
+	cmdcom "github.com/xiemylogos/ontology/v2/cmd/common"
+	"github.com/xiemylogos/ontology/v2/cmd/utils"
+	"github.com/xiemylogos/ontology/v2/common"
+	"github.com/xiemylogos/ontology/v2/common/config"
+	"github.com/xiemylogos/ontology/v2/common/log"
+	"github.com/xiemylogos/ontology/v2/consensus"
+	"github.com/xiemylogos/ontology/v2/core/genesis"
+	"github.com/xiemylogos/ontology/v2/core/ledger"
+	"github.com/xiemylogos/ontology/v2/events"
+	bactor "github.com/xiemylogos/ontology/v2/http/base/actor"
+	hserver "github.com/xiemylogos/ontology/v2/http/base/actor"
+	"github.com/xiemylogos/ontology/v2/http/jsonrpc"
+	"github.com/xiemylogos/ontology/v2/http/localrpc"
+	"github.com/xiemylogos/ontology/v2/http/nodeinfo"
+	"github.com/xiemylogos/ontology/v2/http/restful"
+	"github.com/xiemylogos/ontology/v2/http/websocket"
+	"github.com/xiemylogos/ontology/v2/p2pserver"
+	netreqactor "github.com/xiemylogos/ontology/v2/p2pserver/actor/req"
+	p2p "github.com/xiemylogos/ontology/v2/p2pserver/net/protocol"
+	"github.com/xiemylogos/ontology/v2/txnpool"
+	tc "github.com/xiemylogos/ontology/v2/txnpool/common"
+	"github.com/xiemylogos/ontology/v2/txnpool/proc"
+	"github.com/xiemylogos/ontology/v2/validator/stateful"
+	"github.com/xiemylogos/ontology/v2/validator/stateless"
 )
 
 func setupAPP() *cli.App {
@@ -185,7 +185,7 @@ func startOntology(ctx *cli.Context) {
 		log.Errorf("initTxPool error: %s", err)
 		return
 	}
-	p2pSvr, p2p, err := initP2PNode(ctx, txpool)
+	p2pSvr, p2p, err := initP2PNode(ctx, txpool, acc)
 	if err != nil {
 		log.Errorf("initP2PNode error: %s", err)
 		return
@@ -322,11 +322,11 @@ func initTxPool(ctx *cli.Context) (*proc.TXPoolServer, error) {
 	return txPoolServer, nil
 }
 
-func initP2PNode(ctx *cli.Context, txpoolSvr *proc.TXPoolServer) (*p2pserver.P2PServer, p2p.P2P, error) {
+func initP2PNode(ctx *cli.Context, txpoolSvr *proc.TXPoolServer, acct *account.Account) (*p2pserver.P2PServer, p2p.P2P, error) {
 	if config.DefConfig.Genesis.ConsensusType == config.CONSENSUS_TYPE_SOLO {
 		return nil, nil, nil
 	}
-	p2p, err := p2pserver.NewServer()
+	p2p, err := p2pserver.NewServer(acct)
 	if err != nil {
 		return nil, nil, err
 	}

@@ -22,8 +22,8 @@ import (
 
 	"github.com/ontio/ontology-rosetta/store"
 	util "github.com/ontio/ontology-rosetta/utils"
-	"github.com/ontio/ontology/common"
 	"github.com/stretchr/testify/assert"
+	"github.com/xiemylogos/ontology/v2/common"
 )
 
 func TestGetHeightFromStore(t *testing.T) {
